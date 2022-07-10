@@ -5,8 +5,31 @@ plugins {
     id 'dagger.hilt.android.plugin'
 }
 
+ext {
+    versionMajor = 1 // Major
+    versionMinor = 0 // Minor
+    versionPatch = 1 // Patches, updates
+    versionClassifier = null
+    isSnapshot = false
+    minSdk = 21
+    targetSdk = 32
+}
+
 android {
     compileSdk 31
+
+    signingConfigs {
+        Properties localProps = new Properties()
+        if (rootProject.file('local.properties').exists()) {
+            localProps.load(rootProject.file('local.properties').newDataInputStream())
+        }
+        release {
+            storeFile file(localProps.RELEASE_STORE_FILE)
+            storePassword localProps.RELEASE_STORE_PASSWORD
+            keyAlias localProps.RELEASE_KEY_ALIAS
+            keyPassword localProps.RELEASE_KEY_PASSWORD
+        }
+    }
 
     defaultConfig {
         applicationId "com.plcoding.cleanarchitecturenoteapp"
@@ -23,8 +46,10 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            shrinkResources true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -34,6 +59,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
         useIR = true
+        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     }
     buildFeatures {
         compose true
@@ -47,6 +73,18 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+
+    /*flavorDimensions "default"
+    productFlavors {
+        dev {
+            dimensions "default"
+        }
+
+        prod {
+            dimensions "default"
+        }
+    }*/
+
 }
 
 dependencies {
