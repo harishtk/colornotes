@@ -93,7 +93,7 @@ class EditNoteViewModel @Inject constructor(
                         noteUseCases.addNote(
                             Note(
                                 title = noteTitle.value.text,
-                                content = noteTitle.value.text,
+                                content = noteContent.value.text,
                                 timestamp = System.currentTimeMillis(),
                                 color = noteColor.value,
                                 id = currentNoteId
